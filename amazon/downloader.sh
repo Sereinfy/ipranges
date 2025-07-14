@@ -28,7 +28,8 @@ jq '.prefixes[] | select(.service == "CLOUDFRONT") | [.ip_prefix][] | select(. !
 # save ipv6 - only where service is CLOUDFRONT
 jq '.ipv6_prefixes[] | select(.service == "CLOUDFRONT") | [.ipv6_prefix][] | select(. != null)' -r /tmp/amazon.json > /tmp/CLOUDFRONT-ipv6.txt
 
-grep -vF -f <(echo '
+# 步骤1：将排除列表保存到文件
+cat > /tmp/exclude_cidrs.txt <<'EOF'
 36.103.232.0/25
 36.103.232.128/26
 52.82.128.0/19
@@ -59,7 +60,11 @@ grep -vF -f <(echo '
 223.71.11.0/27
 223.71.71.128/25
 223.71.71.96/27
-') /tmp/CLOUDFRONT-ipv4.txt | sort -h | uniq > /amazon/cloudfront.txt
+EOF
+
+# 步骤2：过滤、排序、去重
+grep -vF -f /tmp/exclude_cidrs.txt /tmp/CLOUDFRONT-ipv4.txt | sort -h | uniq > /amazon/cloudfront_ips.txt
+
 # sort & uniq
 sort -h /tmp/CLOUDFRONT-ipv4.txt | uniq > amazon/cloudfront_ipv4.txt
 sort -h /tmp/CLOUDFRONT-ipv6.txt | uniq > amazon/cloudfront_ipv6.txt
