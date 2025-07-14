@@ -32,3 +32,5 @@ jq '.ipv6_prefixes[] | select(.service == "CLOUDFRONT") | [.ipv6_prefix][] | sel
 # sort & uniq
 sort -h /tmp/CLOUDFRONT-ipv4.txt | uniq > amazon/cloudfront_ipv4.txt
 sort -h /tmp/CLOUDFRONT-ipv6.txt | uniq > amazon/cloudfront_ipv6.txt
+
+jq '(.prefixes | group_by(.ip_prefix) | map(select(length == 1 and .[0].service == "CLOUDFRONT")[].ip_prefix)), (.ipv6_prefixes | group_by(.ipv6_prefix) | map(select(length == 1 and .[0].service == "CLOUDFRONT")[].ipv6_prefix)) ) | .[]' -r /tmp/amazon.json | sort -h | uniq > amazon/cloudfront_ips.txt
