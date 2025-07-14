@@ -32,3 +32,5 @@ jq '.ipv6_prefixes[] | select(.service == "CLOUDFRONT") | [.ipv6_prefix][] | sel
 # sort & uniq
 sort -h /tmp/CLOUDFRONT-ipv4.txt | uniq > amazon/cloudfront_ipv4.txt
 sort -h /tmp/CLOUDFRONT-ipv6.txt | uniq > amazon/cloudfront_ipv6.txt
+
+(jq -r '.prefixes[] | select(.service == "CLOUDFRONT") | .ip_prefix' /tmp/amazon.json | grep -Fxv -f <(jq -r '.prefixes[] | select(.service == "AMAZON") | .ip_prefix' /tmp/amazon.json); jq -r '.ipv6_prefixes[] | select(.service == "CLOUDFRONT") | .ipv6_prefix' /tmp/amazon.json | grep -Fxv -f <(jq -r '.ipv6_prefixes[] | select(.service == "AMAZON") | .ipv6_prefix' /tmp/amazon.json)) | sort -h | uniq > amazon/cloudfront_ips.txt
