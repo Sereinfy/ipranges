@@ -64,7 +64,7 @@ EOF
 
 # 步骤2：过滤、排序、去重
 grep -vF -f /tmp/exclude_cidrs.txt /tmp/CLOUDFRONT-ipv4.txt | sort -h | uniq > amazon/cloudfront_ips.txt
-
+cat /tmp/CLOUDFRONT-ipv6.txt >> amazon/cloudfront_ips.txt
 # sort & uniq
 sort -h /tmp/CLOUDFRONT-ipv4.txt | uniq > amazon/cloudfront_ipv4.txt
 sort -h /tmp/CLOUDFRONT-ipv6.txt | uniq > amazon/cloudfront_ipv6.txt
